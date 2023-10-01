@@ -9,7 +9,7 @@ from tw_youtrack.youtrack_accessor import YoutrackAccessor
 
 def parse_tw_output(input_stream) -> Tuple[Dict[str, str], str]:
     body = ""
-    configuration = dict()
+    headers = dict()
     header = True
 
     for line in input_stream:
@@ -19,16 +19,17 @@ def parse_tw_output(input_stream) -> Tuple[Dict[str, str], str]:
             else:
                 fields = line.strip().split(": ", 2)
                 if len(fields) == 2:
-                    configuration[fields[0]] = fields[1]
+                    headers[fields[0]] = fields[1]
                 else:
-                    configuration[fields[0]] = ""
+                    headers[fields[0]] = ""
         else:
             body += line
 
-    return configuration, body
+    return headers, body
 
 
 if __name__ == "__main__":
+    summary_time = 0
     configuration, raw_timetracks = parse_tw_output(sys.stdin)
     config = Config(configuration)
 
@@ -36,10 +37,14 @@ if __name__ == "__main__":
 
     yt_accessor.check_connection()
     valid_types = yt_accessor.get_work_item_types()
+
     timetracks = parse_timewarrior_body(
         raw_timetracks, valid_types, config.issue_pattern
     )
 
     for timetrack in timetracks:
         yt_accessor.check_issue(timetrack)
-        # yt_accessor.load_time_track(timetrack)
+        yt_accessor.load_time_track(timetrack)
+        summary_time += timetrack.minutes
+
+    print(f"Summary: {summary_time}mins")

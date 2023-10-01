@@ -16,7 +16,7 @@ def convert_datetimes(start: str, end: str):
     start_dt = datetime.strptime(start, DATEFORMAT)
     end_dt = datetime.strptime(end, DATEFORMAT)
     interval = end_dt - start_dt
-    minutes = interval.seconds // 60
+    minutes = interval.seconds // 60 if interval.seconds > 60 else 1
     epoch_time = int(end_dt.timestamp() * 1000)
     return minutes, epoch_time
 
@@ -63,4 +63,3 @@ def parse_timewarrior_body(
                 )
 
     return timetracks
-
