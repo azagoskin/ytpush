@@ -31,8 +31,8 @@ def parse_tw_output(input_stream) -> Tuple[Dict[str, str], str]:
 if __name__ == "__main__":
     summary_time = 0
     configuration, raw_timetracks = parse_tw_output(sys.stdin)
+    
     config = Config(configuration)
-
     yt_accessor = YoutrackAccessor(config)
 
     yt_accessor.check_connection()
