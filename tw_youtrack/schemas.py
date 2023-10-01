@@ -1,5 +1,21 @@
+import dataclasses
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Dict
+
+
+@dataclass(init=False)
+class Config:
+    url: str
+    token: str
+    issue_pattern: str
+
+    def __init__(self, configuration: Dict[str, str]):
+        fields = {field.name for field in dataclasses.fields(self)}
+
+        for key, value in configuration.items():
+            cleaned_key = key.replace('youtrack.', '')
+            if cleaned_key in fields:
+                setattr(self, cleaned_key, value)
 
 
 class Colors:

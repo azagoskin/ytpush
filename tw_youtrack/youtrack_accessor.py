@@ -2,7 +2,7 @@ import json
 import sys
 import requests
 
-from tw_youtrack.schemas import Colors, TimeTrackingItemDC
+from tw_youtrack.schemas import Colors, TimeTrackingItemDC, Config
 
 
 class YoutrackAccessor:
@@ -18,9 +18,9 @@ class YoutrackAccessor:
         "load_timetrack": "/timeTracking/workItems"
     }
 
-    def __init__(self, url, token):
-        self.url = url
-        self.HEADERS["Authorization"] = f"Bearer {token}"
+    def __init__(self, config: Config):
+        self.url = config.url
+        self.HEADERS["Authorization"] = f"Bearer {config.token}"
 
     def log(self, message: str, status_code: int):
         if status_code == 200:
