@@ -3,7 +3,7 @@ import json
 import re
 from dataclasses import dataclass, fields as dataclass_fields
 from datetime import datetime
-from typing import Dict, List, Optional, Sequence
+from typing import Dict, List, Optional, Sequence, Any, Tuple
 
 __all__ = ("Config", "TimeTrackingItemDC")
 
@@ -41,7 +41,7 @@ class TimeTrackingItemDC:
     annotation: Optional[str]
     type: Optional[str]
 
-    def as_body(self) -> dict:
+    def as_body(self) -> Dict[str, Any]:
         body = {
             "date": self.date,
             "duration": {
@@ -56,7 +56,7 @@ class TimeTrackingItemDC:
         return body
 
     @staticmethod
-    def _convert_datetimes(start: str, end: str):
+    def _convert_datetimes(start: str, end: str) -> Tuple[int, int]:
         start_dt = datetime.strptime(start, DATEFORMAT)
         end_dt = datetime.strptime(end, DATEFORMAT)
         interval = end_dt - start_dt
@@ -74,7 +74,7 @@ class TimeTrackingItemDC:
 
     @staticmethod
     def _get_issue_type(
-        tags: Sequence[str], valid_types: Dict
+        tags: Sequence[str], valid_types: Dict[str, Any]
     ) -> Optional[str]:
         types = [valid_types[tag] for tag in tags if tag in valid_types]
         if len(types) > 1:

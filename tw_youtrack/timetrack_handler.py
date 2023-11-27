@@ -1,6 +1,6 @@
 import json
 import re
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from datetime import datetime
 
 from tw_youtrack.schemas import TimeTrackingItemDC
@@ -12,7 +12,7 @@ START_HEADER = "start"
 END_HEADER = "end"
 
 
-def convert_datetimes(start: str, end: str):
+def convert_datetimes(start: str, end: str) -> Tuple[int, int]:
     start_dt = datetime.strptime(start, DATEFORMAT)
     end_dt = datetime.strptime(end, DATEFORMAT)
     interval = end_dt - start_dt
@@ -26,22 +26,20 @@ def parse_timewarrior_timetrack(
 ) -> TimeTrackingItemDC:
     timetrack_type = None
     minutes, epoch_time = convert_datetimes(
-        timetrack.get(START_HEADER), timetrack.get(END_HEADER)
+        timetrack["START_HEADER"], timetrack["END_HEADER"]
     )
 
-    for tag in timetrack.get(TAG_HEADER):
+    for tag in timetrack["TAG_HEADER"]:
         if tag != issue_id and tag in valid_types:
             timetrack_type = valid_types[tag]
 
-    timetrack = TimeTrackingItemDC(
-        issue_id=issue_id,
-        annotation=timetrack.get(ANNOTATION_HEADER),
+    return TimeTrackingItemDC(
+        issue_name=issue_id,
+        annotation=timetrack["ANNOTATION_HEADER"],
         minutes=minutes,
         date=epoch_time,
         type=timetrack_type,
     )
-
-    return timetrack
 
 
 def parse_timewarrior_body(

@@ -38,11 +38,11 @@ class YoutrackAccessor:
         connection.request("POST", endpoint, body=body, headers=self.HEADERS)
         return connection.getresponse()
 
-    def check_connection(self):
+    def check_connection(self) -> None:
         response = self.get_request(self.ENDPOINTS["check_connection"])
         self.logger(f"Connection to {self.url}", response.status == 200)
 
-    def set_work_item_types(self):
+    def set_work_item_types(self) -> None:
         params = urlencode({"fields": "id,name"}, safe=",")
         url = f'{self.ENDPOINTS["get_work_item_types"]}?{params}'
         response = self.get_request(url)
@@ -51,14 +51,14 @@ class YoutrackAccessor:
         }
         self.logger(f"Load work item types", response.status == 200)
 
-    def check_issue(self, timetrack: TimeTrackingItemDC):
+    def check_issue(self, timetrack: TimeTrackingItemDC) -> None:
         url = self.ENDPOINTS["get_issue"] + timetrack.issue_name
         response = self.get_request(url)
         self.logger(
             f"Check issue {timetrack.issue_name}", response.status == 200
         )
 
-    def load_time_track(self, timetrack: TimeTrackingItemDC):
+    def load_time_track(self, timetrack: TimeTrackingItemDC) -> None:
         response = self.post_request(
             self.ENDPOINTS["get_issue"]
             + timetrack.issue_name
