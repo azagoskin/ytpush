@@ -26,9 +26,9 @@ class Config:
     def __init__(self, raw_configuration: str):
         fields = {field.name for field in dataclass_fields(self)}
 
-        for line in raw_configuration.split('\n'):
+        for line in raw_configuration.split("\n"):
             key, value = line.split(": ")
-            cleaned_key = key.replace('youtrack.', '')
+            cleaned_key = key.replace("youtrack.", "")
             if cleaned_key in fields:
                 setattr(self, cleaned_key, value)
 
@@ -39,7 +39,7 @@ class TimeTrackingItemDC:
     date: int
     minutes: int
     annotation: Optional[str]
-    type: Optional[int]
+    type: Optional[str]
 
     def as_body(self) -> dict:
         body = {
@@ -73,7 +73,9 @@ class TimeTrackingItemDC:
         return ids[0] if ids else None
 
     @staticmethod
-    def _get_issue_type(tags: Sequence[str], valid_types: Dict) -> Optional[str]:
+    def _get_issue_type(
+        tags: Sequence[str], valid_types: Dict
+    ) -> Optional[str]:
         types = [valid_types[tag] for tag in tags if tag in valid_types]
         if len(types) > 1:
             raise Exception(f"More than one type: {types}")
@@ -81,7 +83,9 @@ class TimeTrackingItemDC:
         return types[0] if types else None
 
     @classmethod
-    def load_many(cls, tw_body: str, config: Config) -> List[TimeTrackingItemDC]:
+    def load_many(
+        cls, tw_body: str, config: Config
+    ) -> List[TimeTrackingItemDC]:
         timetracks: List[TimeTrackingItemDC] = []
 
         for raw_timetrack in json.loads(tw_body):
@@ -89,8 +93,7 @@ class TimeTrackingItemDC:
             issue_name = cls._get_issue_id(tags, config.issue_pattern)
             timetrack_type = cls._get_issue_type(tags, config.valid_types)
             minutes, epoch_time = cls._convert_datetimes(
-                raw_timetrack.get(START_HEADER),
-                raw_timetrack.get(END_HEADER)
+                raw_timetrack.get(START_HEADER), raw_timetrack.get(END_HEADER)
             )
 
             if issue_name:
@@ -100,7 +103,7 @@ class TimeTrackingItemDC:
                         annotation=raw_timetrack.get(ANNOTATION_HEADER),
                         minutes=minutes,
                         date=epoch_time,
-                        type=timetrack_type
+                        type=timetrack_type,
                     )
                 )
 

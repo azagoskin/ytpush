@@ -8,7 +8,7 @@ from tw_youtrack.youtrack_accessor import YoutrackAccessor
 
 if __name__ == "__main__":
     summary_time = 0
-    raw_configuration, raw_timetracks = sys.stdin.read().split('\n\n')
+    raw_configuration, raw_timetracks = sys.stdin.read().split("\n\n")
 
     config = Config(raw_configuration)
     logger = Logger()

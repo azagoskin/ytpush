@@ -22,14 +22,11 @@ def convert_datetimes(start: str, end: str):
 
 
 def parse_timewarrior_timetrack(
-        issue_id: str,
-        timetrack: Dict[str, str],
-        valid_types: Dict[str, str]
+    issue_id: str, timetrack: Dict[str, str], valid_types: Dict[str, str]
 ) -> TimeTrackingItemDC:
     timetrack_type = None
     minutes, epoch_time = convert_datetimes(
-        timetrack.get(START_HEADER),
-        timetrack.get(END_HEADER)
+        timetrack.get(START_HEADER), timetrack.get(END_HEADER)
     )
 
     for tag in timetrack.get(TAG_HEADER):
@@ -41,14 +38,14 @@ def parse_timewarrior_timetrack(
         annotation=timetrack.get(ANNOTATION_HEADER),
         minutes=minutes,
         date=epoch_time,
-        type=timetrack_type
+        type=timetrack_type,
     )
 
     return timetrack
 
 
 def parse_timewarrior_body(
-        tw_body: str, valid_types: Dict[str, str], issue_pattern: str
+    tw_body: str, valid_types: Dict[str, str], issue_pattern: str
 ) -> List[TimeTrackingItemDC]:
     timetracks: List[TimeTrackingItemDC] = []
     raw_timetracks = json.loads(tw_body)
@@ -57,9 +54,7 @@ def parse_timewarrior_body(
         for tag in raw_timetrack.get(TAG_HEADER):
             if re.search(issue_pattern, tag):
                 timetracks.append(
-                    parse_timewarrior_timetrack(
-                        tag, raw_timetrack, valid_types
-                    )
+                    parse_timewarrior_timetrack(tag, raw_timetrack, valid_types)
                 )
 
     return timetracks

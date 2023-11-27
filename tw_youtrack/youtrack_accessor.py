@@ -13,13 +13,13 @@ class YoutrackAccessor:
     HEADERS = {
         "Accept": "application/json",
         "Cache-control": "no-cache",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
     ENDPOINTS = {
         "check_connection": "/api/users/me",
         "get_work_item_types": "/api/admin/timeTrackingSettings/workItemTypes",
         "get_issue": "/api/issues/",
-        "load_timetrack": "/timeTracking/workItems"
+        "load_timetrack": "/timeTracking/workItems",
     }
 
     def __init__(self, config: Config, logger: Logger):
@@ -55,17 +55,17 @@ class YoutrackAccessor:
         url = self.ENDPOINTS["get_issue"] + timetrack.issue_name
         response = self.get_request(url)
         self.logger(
-            f"Check issue {timetrack.issue_name}",
-            response.status == 200
+            f"Check issue {timetrack.issue_name}", response.status == 200
         )
 
     def load_time_track(self, timetrack: TimeTrackingItemDC):
         response = self.post_request(
-            self.ENDPOINTS["get_issue"] + timetrack.issue_name
+            self.ENDPOINTS["get_issue"]
+            + timetrack.issue_name
             + self.ENDPOINTS["load_timetrack"],
             body=json.dumps(timetrack.as_body()),
         )
         self.logger(
             f"Track {timetrack.minutes} mins to {timetrack.issue_name}",
-            response.status == 200
+            response.status == 200,
         )

@@ -4,9 +4,9 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Colors:
-    OKGREEN: str = '\033[92m'
-    FAIL: str = '\033[91m'
-    ENDC: str = '\033[0m'
+    OKGREEN: str = "\033[92m"
+    FAIL: str = "\033[91m"
+    ENDC: str = "\033[0m"
 
 
 class Logger:
