@@ -1,5 +1,5 @@
 import json
-from typing import Optional, Dict, Union, Any
+from typing import Optional, Dict, Any
 
 from requests import Response, request
 

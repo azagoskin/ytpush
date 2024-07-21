@@ -4,7 +4,7 @@
 
 Interval intersections are not tracked
 ## Installation
-Copy the files to the directory ~/.timewarrior/extensions:
+Copy the files to the directory `~/.timewarrior/extensions`:
 ```
 $ ls -la ~/.timewarrior/extensions/
 drwx------ 6 4096 окт  1 21:12 .
