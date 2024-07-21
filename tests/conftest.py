@@ -1,7 +1,7 @@
 import os
 import pytest
 import json
-from typing import Union
+from typing import Any
 
 BASE_URL = "https://youtrack.mysite.ru/api"
 DATA_DIR = "tests/data"
@@ -12,12 +12,12 @@ def read_file(filename: str) -> str:
         return f.read()
 
 
-def read_json(filename: str) -> Union[list, dict]:
+def read_json(filename: str) -> Any:
     return json.loads(read_file(filename))
 
 
 @pytest.fixture
-def external_requests(requests_mock):
+def external_requests(requests_mock) -> None:  # type: ignore
     requests_mock.get(BASE_URL + "/users/me", json=read_json("me.body.json"))
     requests_mock.get(
         BASE_URL + "/admin/timeTrackingSettings/workItemTypes",

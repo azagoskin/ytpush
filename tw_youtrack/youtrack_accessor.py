@@ -1,5 +1,5 @@
 import json
-from typing import Optional
+from typing import Optional, Dict, Union, Any
 
 from requests import Response, request
 
@@ -29,8 +29,8 @@ class YoutrackAccessor:
         self,
         path: str,
         method: str = "GET",
-        params: Optional[dict] = None,
-        body: Optional[dict] = None,
+        params: Optional[Dict[str, Any]] = None,
+        body: Optional[Dict[str, Any]] = None,
     ) -> "Response":
         return request(
             method=method,

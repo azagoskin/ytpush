@@ -11,7 +11,7 @@ from tests.const import (
 
 
 @pytest.mark.usefixtures("external_requests")
-def test_app_success(requests_mock):
+def test_app_success(requests_mock) -> None:   # type: ignore
     app(TIMEWARRIOR_STDIN)
 
     history = requests_mock.request_history
@@ -32,12 +32,12 @@ def test_app_success(requests_mock):
 
 
 @pytest.mark.usefixtures("external_requests")
-def test_app_wrong_params():
+def test_app_wrong_params() -> None:
     with pytest.raises(AttributeError):
-        assert app(TIMEWARRIOR_MULTIPLE_TAGS_STDIN)
+        app(TIMEWARRIOR_MULTIPLE_TAGS_STDIN)
 
     with pytest.raises(AttributeError):
-        assert app(TIMEWARRIOR_MULTIPLE_TYPES_STDIN)
+        app(TIMEWARRIOR_MULTIPLE_TYPES_STDIN)
 
     with pytest.raises(SystemExit):
-        assert app(TIMEWARRIOR_NOT_FOUND_STDIN)
+        app(TIMEWARRIOR_NOT_FOUND_STDIN)

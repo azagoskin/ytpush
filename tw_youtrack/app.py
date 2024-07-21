@@ -3,7 +3,7 @@ from tw_youtrack.schemas import Config, TimeTrackingItemDC
 from tw_youtrack.youtrack_accessor import YoutrackAccessor
 
 
-def app(stdin: str):
+def app(stdin: str) -> None:
     summary_time = 0
     raw_configuration, raw_timetracks = stdin.split("\n\n")
 
