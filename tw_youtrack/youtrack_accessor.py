@@ -1,7 +1,7 @@
 import json
+from typing import Optional
 
-from http.client import HTTPSConnection, HTTPResponse
-from urllib.parse import urlencode
+from requests import Response, request
 
 from tw_youtrack.logger import Logger
 from tw_youtrack.schemas import TimeTrackingItemDC, Config
@@ -23,45 +23,57 @@ class YoutrackAccessor:
     def __init__(self, config: Config, logger: Logger):
         self.config = config
         self.logger = logger
-        self.url = config.url.replace("https://", "")
         self.HEADERS["Authorization"] = f"Bearer {config.token}"
 
-    def get_request(self, endpoint: str) -> HTTPResponse:
-        connection = HTTPSConnection(self.url)
-        connection.request("GET", endpoint, headers=self.HEADERS)
-        return connection.getresponse()
-
-    def post_request(self, endpoint: str, body: str) -> HTTPResponse:
-        connection = HTTPSConnection(self.url)
-        connection.request("POST", endpoint, body=body, headers=self.HEADERS)
-        return connection.getresponse()
+    def auth_request(
+        self,
+        path: str,
+        method: str = "GET",
+        params: Optional[dict] = None,
+        body: Optional[dict] = None,
+    ) -> "Response":
+        return request(
+            method=method,
+            url=self.config.url + path,
+            headers=self.HEADERS,
+            params=params,
+            json=body,
+        )
 
     def check_connection(self) -> None:
-        response = self.get_request(self.ENDPOINTS["check_connection"])
-        self.logger(f"Connection to {self.url}", response.status == 200)
+        response = self.auth_request(self.ENDPOINTS["check_connection"])
+        self.logger(
+            f"Connection to {self.config.url}", response.status_code == 200
+        )
 
     def set_work_item_types(self) -> None:
-        params = urlencode({"fields": "id,name"}, safe=",")
-        url = f'{self.ENDPOINTS["get_work_item_types"]}?{params}'
-        response = self.get_request(url)
+        params = {"fields": "id,name"}
+        response = self.auth_request(
+            self.ENDPOINTS["get_work_item_types"], params=params
+        )
         self.config.valid_types = {
-            item["name"]: item["id"] for item in json.loads(response.read())
+            item["name"]: item["id"] for item in json.loads(response.text)
         }
-        self.logger("Load work item types", response.status == 200)
+        self.logger("Load work item types", response.status_code == 200)
 
     def check_issue(self, timetrack: TimeTrackingItemDC) -> None:
         url = self.ENDPOINTS["get_issue"] + timetrack.issue_name
-        response = self.get_request(url)
-        self.logger(f"Check issue {timetrack.issue_name}", response.status == 200)
+        response = self.auth_request(url)
+        self.logger(
+            f"Check issue {timetrack.issue_name}", response.status_code == 200
+        )
 
     def load_time_track(self, timetrack: TimeTrackingItemDC) -> None:
-        response = self.post_request(
+        params = {"fields": "date,duration(id,minutes),text,type(id,name)"}
+        response = self.auth_request(
             self.ENDPOINTS["get_issue"]
             + timetrack.issue_name
             + self.ENDPOINTS["load_timetrack"],
-            body=json.dumps(timetrack.as_body()),
+            method="POST",
+            params=params,
+            body=timetrack.as_body(),
         )
         self.logger(
             f"Track {timetrack.minutes} mins to {timetrack.issue_name}",
-            response.status == 200,
+            response.status_code == 200,
         )

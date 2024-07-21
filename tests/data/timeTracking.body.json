@@ -1,0 +1,15 @@
+{
+  "duration": {
+    "id": "107",
+    "minutes": 107,
+    "$type": "DurationValue"
+  },
+  "date": 1721001600000,
+  "type": {
+    "name": "Meet",
+    "id": "89-6",
+    "$type": "WorkItemType"
+  },
+  "text": "1-1",
+  "$type": "IssueWorkItem"
+}

@@ -1,3 +1,5 @@
 venv/
 .mypy_cache
 .idea
+.coverage
+__pycache__

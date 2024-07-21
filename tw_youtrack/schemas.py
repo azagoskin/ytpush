@@ -68,7 +68,7 @@ class TimeTrackingItemDC:
     def _get_issue_id(tags: Sequence[str], pattern: str) -> Optional[str]:
         ids = [tag for tag in tags if re.search(pattern, tag)]
         if len(ids) > 1:
-            raise Exception(f"More than one tag: {ids}")
+            raise AttributeError(f"More than one tag: {ids}")
 
         return ids[0] if ids else None
 
@@ -78,14 +78,15 @@ class TimeTrackingItemDC:
     ) -> Optional[str]:
         types = [valid_types[tag] for tag in tags if tag in valid_types]
         if len(types) > 1:
-            raise Exception(f"More than one type: {types}")
+            raise AttributeError(f"More than one type: {types}")
 
         return types[0] if types else None
 
     @classmethod
-    def load_many(cls, tw_body: str, config: Config) -> List[TimeTrackingItemDC]:
+    def load_many(
+        cls, tw_body: str, config: Config
+    ) -> List[TimeTrackingItemDC]:
         timetracks: List[TimeTrackingItemDC] = []
-
         for raw_timetrack in json.loads(tw_body):
             tags = raw_timetrack.get(TAG_HEADER, ())
             issue_name = cls._get_issue_id(tags, config.issue_pattern)
