@@ -15,6 +15,7 @@ def test_app_success(requests_mock) -> None:  # type: ignore
     app(TIMEWARRIOR_STDIN)
 
     history = requests_mock.request_history
+    assert history[4].headers["Authorization"] == "Bearer MYYOUTRACK_TOKEN"
     task1_data = json.loads(history[4].text)
     # TODO: fix timezone
     task1_data.pop("date")
