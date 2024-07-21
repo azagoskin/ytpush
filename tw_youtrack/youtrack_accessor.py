@@ -6,8 +6,6 @@ from urllib.parse import urlencode
 from tw_youtrack.logger import Logger
 from tw_youtrack.schemas import TimeTrackingItemDC, Config
 
-__all__ = ("YoutrackAccessor",)
-
 
 class YoutrackAccessor:
     HEADERS = {
@@ -49,14 +47,12 @@ class YoutrackAccessor:
         self.config.valid_types = {
             item["name"]: item["id"] for item in json.loads(response.read())
         }
-        self.logger(f"Load work item types", response.status == 200)
+        self.logger("Load work item types", response.status == 200)
 
     def check_issue(self, timetrack: TimeTrackingItemDC) -> None:
         url = self.ENDPOINTS["get_issue"] + timetrack.issue_name
         response = self.get_request(url)
-        self.logger(
-            f"Check issue {timetrack.issue_name}", response.status == 200
-        )
+        self.logger(f"Check issue {timetrack.issue_name}", response.status == 200)
 
     def load_time_track(self, timetrack: TimeTrackingItemDC) -> None:
         response = self.post_request(

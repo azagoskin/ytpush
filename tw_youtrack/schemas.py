@@ -83,9 +83,7 @@ class TimeTrackingItemDC:
         return types[0] if types else None
 
     @classmethod
-    def load_many(
-        cls, tw_body: str, config: Config
-    ) -> List[TimeTrackingItemDC]:
+    def load_many(cls, tw_body: str, config: Config) -> List[TimeTrackingItemDC]:
         timetracks: List[TimeTrackingItemDC] = []
 
         for raw_timetrack in json.loads(tw_body):
